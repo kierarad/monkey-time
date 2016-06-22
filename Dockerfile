@@ -1,15 +1,16 @@
-# use our prepared Raspberry Pi compatible Docker base image with Node.js
-FROM hypriot/rpi-node:0.12.0
+FROM node:argon
 
-# make the src folder available in the docker image
-ADD src/ /src
-WORKDIR /src
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-# install the dependencies from the package.json file
+# Install app dependencies
+COPY package.json /usr/src/app/
 RUN npm install
 
-# make port 80 available outside of the image
-EXPOSE 80
+# Bundle app source
+COPY . /usr/src/app
 
-# start node with the index.js file of our hello-world application
-CMD ["node", "index.js"]
+EXPOSE 8080
+
+CMD [ "npm", "start" ]
